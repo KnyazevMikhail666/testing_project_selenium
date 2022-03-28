@@ -13,7 +13,7 @@ class LoginPageLocators:
 
 
 class ProductPageLocators:
-    PRODUCT_URL = 'http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear'
+    PRODUCT_URL = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019'
     BUTTON_ADD_BASKET = (By.CSS_SELECTOR, '.btn-add-to-basket')
     MESSAGE_NAME_PRODUCT = (By.CSS_SELECTOR, '#messages :nth-child(1) strong ')
     ALL_PRICE_IN_BASKET = (By.CSS_SELECTOR, '.row .hidden-xs')
