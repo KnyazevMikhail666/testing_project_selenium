@@ -1,16 +1,44 @@
 import pytest
 from .page.product_page import ProductPage
-from .page.locators import ProductPageLocators
+from .page.login_page import LoginPage
+from .page.locators import ProductPageLocators, MainPageLocators, LoginPageLocators
 
-link = [f'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer{n}' for n in range(10)]
-bugged_link = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7'
-ind = link.index(bugged_link)
-link[ind] = pytest.param(bugged_link, marks=pytest.mark.xfail(reason='some bug'))
+# для удобства:
+# pytest -v --tb=no --language=en -m need_review
 
-@pytest.mark.parametrize('link', link)
-def test_guest_can_add_product_to_basket(browser, link):
-    page = ProductPage(browser, link)
-    page.open()
-    page.go_to(ProductPageLocators.BUTTON_ADD_BASKET)
-    page.solve_quiz_and_get_code()
-    page.run_tests_case()
+@pytest.mark.need_review
+class TestUserAddToBasketFromProductPage:
+    def add_product_to_basket(self, fixture):
+        page = ProductPage(fixture, ProductPageLocators.PRODUCT_URL)
+        page.open()
+        page.click_add_basket()
+        page.run_tests_case()
+
+    def test_user_can_add_product_to_basket(self, setup):
+        self.add_product_to_basket(setup)
+
+    def test_guest_can_add_product_to_basket(self, browser):
+        self.add_product_to_basket(browser)
+
+    #  я так и не понял откуда брать два последних теста и оставил эти помоему они те же что и там просто
+    #  называются по другому
+    # p.s.  прошу понять и простить
+
+    @pytest.mark.xfail
+    def test_user_cant_see_success_message_after_adding_product_to_basket(self, browser):
+        page = ProductPage(browser, ProductPageLocators.PRODUCT_URL)
+        page.open()
+        page.click_add_basket()
+        page.should_not_be_success_message()
+
+    def test_user_cant_see_success_message(self, browser):
+        page = ProductPage(browser, ProductPageLocators.PRODUCT_URL)
+        page.open()
+        page.should_not_be_success_message()
+
+    @pytest.mark.xfail
+    def test_message_disappeared_after_adding_product_to_basket(self, browser):
+        page = ProductPage(browser, ProductPageLocators.PRODUCT_URL)
+        page.open()
+        page.click_add_basket()
+        page.should_not_be_success_message_is_disappeared()
